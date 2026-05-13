@@ -1,0 +1,36 @@
+<div class="all-accounts-container">
+  <h2>All Accounts</h2>
+  
+  <div *ngIf="loading()" class="loading">
+    <p>Loading accounts...</p>
+  </div>
+
+  <div *ngIf="error()" class="error">
+    <p>{{ error() }}</p>
+  </div>
+
+  <div *ngIf="!loading() && !error() && accounts().length > 0" class="accounts-list">
+    <table>
+      <thead>
+        <tr>
+          <th>Account ID</th>
+          <th>Account Name</th>
+          <th>Balance</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let account of accounts()">
+          <td>{{ account.id }}</td>
+          <td>{{ account.name }}</td>
+          <td>{{ account.balance }}</td>
+          <td>{{ account.type }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading() && !error() && accounts().length === 0" class="no-accounts">
+    <p>No accounts found.</p>
+  </div>
+</div>
