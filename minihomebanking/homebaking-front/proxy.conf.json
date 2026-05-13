@@ -1,0 +1,11 @@
+{
+  "/controllers": {
+    "target": "http://localhost:80",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/controllers": ""
+    },
+    "logLevel": "debug"
+  }
+}

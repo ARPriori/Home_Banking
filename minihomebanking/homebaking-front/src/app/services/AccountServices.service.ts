@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
-  private apiUrl = 'http://localhost/controllers/AccountController.php'; // URL del tuo script su XAMPP
+  private apiUrl = '/controllers/accounts'; // Proxy reindirizza a localhost:80
 
   constructor(private http: HttpClient) {}
 

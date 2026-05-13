@@ -7,19 +7,11 @@ require __DIR__ . '/controllers/ConversionController.php';
 require __DIR__ . '/controllers/AccountController.php';
 
 
-
 $app = AppFactory::create();
 
-$app->add(function ($request, $handler) {
-    $response = $handler->handle($request);
-    return $response
-        ->withHeader('Access-Control-Allow-Origin', 'http://localhost:4200')
-        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
-        ->withHeader('Access-Control-Allow-Credentials', 'true');
-});
 
-$app->addBodyParsingMiddleware();
+$app->setBasePath('');
+
 
 //Transactions API's
 $app ->get('/accounts', 'AccountController:allAccounts');
@@ -29,12 +21,16 @@ $app ->post('/accounts/{account}/deposit', 'TransactionController:deposit');
 $app ->post('/accounts/{account}/withdrawal', 'TransactionController:withdraw');
 $app ->put('/accounts/{account}/transactions/{transactionId}', 'TransactionController:editDesc');
 $app ->delete('/accounts/{account}/transactions/{transactionId}', 'TransactionController:delete');
-
 $app ->get('/accounts/{account}/balance', 'TransactionController:getBalance');
 
 //Convertions API's
 $app ->get('/accounts/{account}/balance/convert/fiat', 'ConversionController:toFiat');
 $app ->get('/accounts/{account}/balance/convert/crypto', 'ConversionController:toCrypto');
+
+
+$app->addBodyParsingMiddleware();
+$app->addRoutingMiddleware();
+$app->addErrorMiddleware(true, true, true); 
 
 $app->run();
 
