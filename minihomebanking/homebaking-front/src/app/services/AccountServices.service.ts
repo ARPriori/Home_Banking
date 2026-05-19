@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
-  private apiUrl = '/controllers/accounts'; // Proxy reindirizza a localhost:80
+  private apiUrl = '/api/accounts';
 
   constructor(private http: HttpClient) {}
 

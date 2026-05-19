@@ -1,0 +1,26 @@
+<div class="tx-form">
+  <h3>New Transaction</h3>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label>Type
+      <select formControlName="type">
+        <option value="deposit">Deposit</option>
+        <option value="withdrawal">Withdrawal</option>
+      </select>
+    </label>
+    <label>Amount
+      <input type="number" formControlName="amount" step="0.01" />
+    </label>
+    <label>Description
+      <input type="text" formControlName="description" />
+    </label>
+
+    <!-- Validation messages -->
+    <div class="errors" *ngIf="form.touched && form.invalid">
+      <div *ngIf="form.get('amount')?.errors?.['required']">Amount is required.</div>
+      <div *ngIf="form.get('amount')?.errors?.['min']">Amount must be greater than 0.</div>
+      <div *ngIf="form.get('description')?.errors?.['required']">Description is required.</div>
+    </div>
+
+    <button type="submit" [disabled]="submitting || form.invalid">Submit</button>
+  </form>
+</div>

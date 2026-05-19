@@ -1,0 +1,41 @@
+<div class="dashboard">
+  <aside class="sidebar">
+    <h2>Bank Dashboard</h2>
+    <nav>
+      <a routerLink="/">Overview</a>
+      <a routerLink="/movements">Movements</a>
+      <a routerLink="/new">New Transaction</a>
+    </nav>
+    <div class="legend">
+      <strong>Legend</strong>
+      <div><span class="pill deposit">●</span> Deposit</div>
+      <div><span class="pill withdrawal">●</span> Withdrawal</div>
+    </div>
+  </aside>
+  <main class="main">
+    <section class="balance-card">
+      <h3>Current Balance</h3>
+      <div class="balance">
+        <!-- Use Angular currency pipe for consistent formatting -->
+        <span *ngIf="loading()">Loading...</span>
+        <span *ngIf="!loading() && balance() !== null">{{ balance() | currency:'EUR':'symbol':'1.2-2' }}</span>
+        <span *ngIf="!loading() && balance() === null">—</span>
+      </div>
+      <div class="quick-actions">
+        <!-- Quick conversion shortcuts to explore different currencies -->
+        <button routerLink="/convert/fiat/USD">USD</button>
+        <button routerLink="/convert/fiat/GBP">GBP</button>
+        <button routerLink="/convert/fiat/JPY">JPY</button>
+        <button routerLink="/convert/crypto/BTC">BTC</button>
+        <button routerLink="/convert/crypto/ETH">ETH</button>
+        <button routerLink="/convert/crypto/BNB">BNB</button>
+      </div>
+    </section>
+    <section class="recent">
+      <h4>Recent Movements</h4>
+      <p class="hint">Click a movement to view details. Use New Transaction to add deposits/withdrawals.</p>
+      <a routerLink="/movements">View all movements</a>
+    </section>
+    <router-outlet></router-outlet>
+  </main>
+</div>

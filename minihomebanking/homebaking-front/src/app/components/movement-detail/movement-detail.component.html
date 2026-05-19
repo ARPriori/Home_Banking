@@ -1,0 +1,11 @@
+<div class="detail">
+  <h3>Movement Detail</h3>
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="!loading && movement">
+    <p><strong>Type:</strong> {{ movement.type }}</p>
+    <p><strong>Amount:</strong> {{ movement.amount }}</p>
+    <p><strong>Description:</strong> {{ movement.description }}</p>
+    <p><strong>Date:</strong> {{ movement.created_at }}</p>
+  </div>
+  <div *ngIf="!loading && !movement">Not found</div>
+</div>

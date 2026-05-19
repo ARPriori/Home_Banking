@@ -1,0 +1,17 @@
+<div class="conversion">
+  <div class="controls">
+    <label>Symbol
+      <input [value]="symbol" (input)="symbol = $any($event.target).value" />
+    </label>
+    <button (click)="convert()">Convert</button>
+  </div>
+  <div class="result" *ngIf="result">
+    <!-- Present conversion result in a readable way -->
+    <div *ngIf="result.amount !== undefined">
+      <strong>Converted:</strong>
+      <span>{{ result.amount | number:'1.2-2' }}</span>
+      <span>{{ result.currency || symbol }}</span>
+    </div>
+    <pre *ngIf="!result.amount">{{ result | json }}</pre>
+  </div>
+</div>

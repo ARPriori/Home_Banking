@@ -1,0 +1,25 @@
+<div class="page-shell">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Accounts</p>
+      <h1>Accounts Overview</h1>
+      <p class="muted-copy">Select an account to manage it.</p>
+    </div>
+  </header>
+
+  <div class="app-panel">
+    <div class="debug-banner">AccountsOverview loaded · {{ accounts.length }} items · route: {{ currentRoute }}</div>
+    <div class="info-grid">
+      <div *ngFor="let a of accounts" class="info-item" (click)="openAccount(a)" style="cursor:pointer">
+        <span>Account</span>
+        <strong>{{ a.name || a[1] || '' }} {{ a.surname || a[2] || '' }}</strong>
+        <p class="muted-copy">ID: {{ a.id || a[0] }} · {{ a.currency || a[3] }}</p>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && accounts.length === 0" class="empty-state">
+      <div *ngIf="!error">No accounts found.</div>
+      <div *ngIf="error">{{ error }}</div>
+    </div>
+  </div>
+</div>

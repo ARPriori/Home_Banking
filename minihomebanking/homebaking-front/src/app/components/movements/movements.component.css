@@ -1,0 +1,10 @@
+.movements table { width:100%; border-collapse:collapse }
+.movements th, .movements td { padding:8px; border-bottom:1px solid #eee }
+.row { cursor:pointer }
+.deposit { color:green }
+.withdrawal { color:red }
+.amt-deposit { color:green; font-weight:600 }
+.amt-withdraw { color:red; font-weight:600 }
+
+.movements .summary { display:flex; gap:16px; margin-bottom:8px; background:#fff; padding:8px; border-radius:6px }
+.movements .summary div { font-size:0.95rem }

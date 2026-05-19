@@ -1,0 +1,5 @@
+.app-panel { margin-bottom: 1rem }
+.data-table { width: 100%; border-collapse: collapse }
+.data-table td, .data-table th { border-bottom: 1px solid var(--border) }
+.status-pill.credit { background: var(--success-soft); color: var(--success) }
+.status-pill.debit { background: var(--danger-soft); color: var(--danger) }

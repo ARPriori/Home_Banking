@@ -1,0 +1,24 @@
+<div class="movements">
+  <h3>Movements</h3>
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="!loading">
+    <div class="summary">
+      <div><strong>Deposits:</strong> {{ depositsTotal | currency:'EUR':'symbol':'1.2-2' }}</div>
+      <div><strong>Withdrawals:</strong> {{ withdrawalsTotal | currency:'EUR':'symbol':'1.2-2' }}</div>
+      <div><strong>Net:</strong> {{ netTotal | currency:'EUR':'symbol':'1.2-2' }}</div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Type</th><th>Description</th><th>Amount</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let m of movements" (click)="open(m)" class="row">
+          <td>{{ m.created_at || '-' }}</td>
+          <td [class.deposit]="m.type=='deposit'" [class.withdrawal]="m.type=='withdrawal'">{{ m.type }}</td>
+          <td>{{ m.description }}</td>
+          <td [class.amt-deposit]="m.type=='deposit'" [class.amt-withdraw]="m.type=='withdrawal'">{{ m.amount | currency:'EUR':'symbol':'1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

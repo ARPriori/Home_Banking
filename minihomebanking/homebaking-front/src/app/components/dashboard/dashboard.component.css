@@ -1,0 +1,14 @@
+.dashboard { display:flex; min-height:80vh; font-family: Arial, sans-serif; gap:16px }
+.sidebar { width:240px; background:#0f172a; color:#fff; padding:1rem; border-radius:8px }
+.sidebar nav a { display:block; color:#cbd5e1; margin:8px 0; text-decoration:none }
+.sidebar .legend { margin-top:12px; color:#e2e8f0 }
+.sidebar .pill { display:inline-block; width:12px; text-align:center; margin-right:8px }
+.main { flex:1; padding:1rem }
+.balance-card { background:#fff; padding:1.25rem; border-radius:8px; box-shadow:0 1px 6px rgba(2,6,23,0.08) }
+.balance { font-size:2.25rem; margin-top:8px; font-weight:700 }
+.quick-actions { margin-top:12px }
+.quick-actions button { margin-right:8px; padding:6px 10px; border-radius:6px; border:1px solid #e6edf3; background:#f8fafc }
+.hint { color:#475569; margin-bottom:6px }
+
+.deposit { color: #16a34a }
+.withdrawal { color: #ef4444 }

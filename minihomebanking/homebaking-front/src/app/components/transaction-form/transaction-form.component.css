@@ -1,0 +1,5 @@
+.tx-form { background:#fff; padding:1rem; border-radius:6px }
+.tx-form label { display:block; margin:8px 0 }
+.tx-form input, .tx-form select { width:100%; padding:6px }
+
+.errors { color:#b91c1c; font-size:0.9rem; margin-top:8px }
