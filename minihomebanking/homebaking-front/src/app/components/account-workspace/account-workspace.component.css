@@ -1,5 +1,21 @@
-.app-panel { margin-bottom: 1rem }
-.data-table { width: 100%; border-collapse: collapse }
-.data-table td, .data-table th { border-bottom: 1px solid var(--border) }
-.status-pill.credit { background: var(--success-soft); color: var(--success) }
-.status-pill.debit { background: var(--danger-soft); color: var(--danger) }
+.clickable-card {
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+.clickable-card:hover {
+  background-color: #f0f4f8;
+  transform: translateY(-1px);
+}
+.clickable-card:active {
+  transform: translateY(0);
+}
+.calc-text {
+  color: #666;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+.result-text {
+  color: #007bff;
+  font-weight: bold;
+  font-size: 0.95rem;
+}

@@ -33,8 +33,8 @@ export const routes: Routes = [
     { path: 'movements', component: MovementsComponent },
     { path: 'movement/:id', component: MovementDetailComponent },
     { path: 'new', component: TransactionFormComponent },
-    { path: 'convert/fiat/:currency', component: ConversionComponent, data: { type: 'fiat' } },
-    { path: 'convert/crypto/:symbol', component: ConversionComponent, data: { type: 'crypto' } },
+    // { path: 'convert/fiat/:currency', component: ConversionComponent, data: { type: 'fiat' } },
+    // { path: 'convert/crypto/:symbol', component: ConversionComponent, data: { type: 'crypto' } },
     { path: 'account/:id', component: AccountWorkspaceComponent },
     { path: '**', redirectTo: '', pathMatch: 'full' }
 ];

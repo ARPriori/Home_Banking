@@ -17,6 +17,10 @@ export class AccountWorkspaceComponent implements OnInit {
   movements = signal<Movement[]>([]);
   loading = signal(false);
 
+  // NUOVO: Tracciamento dei risultati e caricamenti delle conversioni rapide
+  conversionResults = signal<{ [key: string]: number | null }>({});
+  conversionLoading = signal<{ [key: string]: boolean }>({});
+
   constructor(private route: ActivatedRoute, private accountService: AccountService) {}
 
   ngOnInit(): void {
@@ -54,6 +58,33 @@ export class AccountWorkspaceComponent implements OnInit {
       complete: () => {
         console.log('✅ Load complete');
         this.loading.set(false);
+      }
+    });
+  }
+
+  // NUOVO: Esegue la chiamata all'AccountService senza cambiare pagina
+  runQuickConversion(type: 'fiat' | 'crypto', symbol: string) {
+    const currentAcc = this.account();
+    if (!currentAcc) return;
+
+    // Imposta lo stato di caricamento per questa valuta
+    this.conversionLoading.update(prev => ({ ...prev, [symbol]: true }));
+    this.conversionResults.update(prev => ({ ...prev, [symbol]: null }));
+
+    const request$ = type === 'fiat' 
+      ? this.accountService.convertFiat(currentAcc.id, symbol)
+      : this.accountService.convertCrypto(currentAcc.id, symbol);
+
+    request$.subscribe({
+      next: (res: any) => {
+        // Estrae il valore numerico usando la proprietà .amount verificata nel vecchio template
+        const convertedAmount = res?.amount ?? null;
+        this.conversionResults.update(prev => ({ ...prev, [symbol]: convertedAmount }));
+        this.conversionLoading.update(prev => ({ ...prev, [symbol]: false }));
+      },
+      error: (err) => {
+        console.error(`❌ Conversion failed for ${symbol}:`, err);
+        this.conversionLoading.update(prev => ({ ...prev, [symbol]: false }));
       }
     });
   }

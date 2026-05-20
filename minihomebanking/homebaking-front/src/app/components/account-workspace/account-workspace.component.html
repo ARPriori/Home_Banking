@@ -44,22 +44,77 @@
   <div class="app-panel" style="margin-top:1rem;">
     <div class="panel-header"><h2>Quick Conversions</h2></div>
     <div class="form-grid">
+      
+      <!-- Conversione FIAT -->
       <div class="field-group">
         <label class="form-label">Convert to FIAT</label>
         <div class="info-grid">
-          <div class="info-item">USD<br/><strong>Quick convert</strong></div>
-          <div class="info-item">GBP<br/><strong>Quick convert</strong></div>
-          <div class="info-item">JPY<br/><strong>Quick convert</strong></div>
+          
+          <div class="info-item clickable-card" (click)="runQuickConversion('fiat', 'USD')">
+            USD<br/>
+            <span *ngIf="conversionLoading()['USD']" class="calc-text">Calculating...</span>
+            <strong *ngIf="!conversionLoading()['USD'] && conversionResults()['USD'] === undefined || conversionResults()['USD'] === null">Quick convert</strong>
+            <span *ngIf="conversionResults()['USD'] !== undefined && conversionResults()['USD'] !== null" class="result-text">
+              {{ conversionResults()['USD'] | number:'1.2-2' }} USD
+            </span>
+          </div>
+
+          <div class="info-item clickable-card" (click)="runQuickConversion('fiat', 'GBP')">
+            GBP<br/>
+            <span *ngIf="conversionLoading()['GBP']" class="calc-text">Calculating...</span>
+            <strong *ngIf="!conversionLoading()['GBP'] && conversionResults()['GBP'] === undefined || conversionResults()['GBP'] === null">Quick convert</strong>
+            <span *ngIf="conversionResults()['GBP'] !== undefined && conversionResults()['GBP'] !== null" class="result-text">
+              {{ conversionResults()['GBP'] | number:'1.2-2' }} GBP
+            </span>
+          </div>
+
+          <div class="info-item clickable-card" (click)="runQuickConversion('fiat', 'JPY')">
+            JPY<br/>
+            <span *ngIf="conversionLoading()['JPY']" class="calc-text">Calculating...</span>
+            <strong *ngIf="!conversionLoading()['JPY'] && conversionResults()['JPY'] === undefined || conversionResults()['JPY'] === null">Quick convert</strong>
+            <span *ngIf="conversionResults()['JPY'] !== undefined && conversionResults()['JPY'] !== null" class="result-text">
+              {{ conversionResults()['JPY'] | number:'1.2-2' }} JPY
+            </span>
+          </div>
+
         </div>
       </div>
+
+      <!-- Conversione Crypto -->
       <div class="field-group">
         <label class="form-label">Convert to Crypto</label>
         <div class="info-grid">
-          <div class="info-item">BTC<br/><strong>Quick convert</strong></div>
-          <div class="info-item">ETH<br/><strong>Quick convert</strong></div>
-          <div class="info-item">BNB<br/><strong>Quick convert</strong></div>
+          
+          <div class="info-item clickable-card" (click)="runQuickConversion('crypto', 'BTC')">
+            BTC<br/>
+            <span *ngIf="conversionLoading()['BTC']" class="calc-text">Calculating...</span>
+            <strong *ngIf="!conversionLoading()['BTC'] && conversionResults()['BTC'] === undefined || conversionResults()['BTC'] === null">Quick convert</strong>
+            <span *ngIf="conversionResults()['BTC'] !== undefined && conversionResults()['BTC'] !== null" class="result-text">
+              {{ conversionResults()['BTC'] | number:'1.4-6' }} BTC
+            </span>
+          </div>
+
+          <div class="info-item clickable-card" (click)="runQuickConversion('crypto', 'ETH')">
+            ETH<br/>
+            <span *ngIf="conversionLoading()['ETH']" class="calc-text">Calculating...</span>
+            <strong *ngIf="!conversionLoading()['ETH'] && conversionResults()['ETH'] === undefined || conversionResults()['ETH'] === null">Quick convert</strong>
+            <span *ngIf="conversionResults()['ETH'] !== undefined && conversionResults()['ETH'] !== null" class="result-text">
+              {{ conversionResults()['ETH'] | number:'1.4-6' }} ETH
+            </span>
+          </div>
+
+          <div class="info-item clickable-card" (click)="runQuickConversion('crypto', 'BNB')">
+            BNB<br/>
+            <span *ngIf="conversionLoading()['BNB']" class="calc-text">Calculating...</span>
+            <strong *ngIf="!conversionLoading()['BNB'] && conversionResults()['BNB'] === undefined || conversionResults()['BNB'] === null">Quick convert</strong>
+            <span *ngIf="conversionResults()['BNB'] !== undefined && conversionResults()['BNB'] !== null" class="result-text">
+              {{ conversionResults()['BNB'] | number:'1.4-6' }} BNB
+            </span>
+          </div>
+
         </div>
       </div>
+
     </div>
   </div>
 </div>
