@@ -2,21 +2,24 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Movement } from '../models/movement.model';
+import { Movement, MovementType } from '../models/movement.model';
 import { Account } from '../models/account.model';
 
-/**
- * AccountService - central HTTP client for account operations.
- * All backend endpoints are proxied under `/api` during development.
- */
 @Injectable({ providedIn: 'root' })
 export class AccountService {
-  // Base API path uses dev server proxy (see proxy.conf.json)
   private readonly base = '/api';
+  currentAccount: Account | null = null;
 
   constructor(private http: HttpClient) {}
 
-  /** Get list of accounts. */
+  /** Recupera l'ID del conto attivo o un fallback di default (es. 1) */
+  private getActiveAccountId(explicitId?: number | string): number | string {
+    if (explicitId !== undefined && explicitId !== null && explicitId !== '') {
+      return explicitId;
+    }
+    return this.currentAccount?.id || 1;
+  }
+
   private normalizeAccount(data: any): Account {
     if (Array.isArray(data)) {
       return {
@@ -37,69 +40,107 @@ export class AccountService {
           return response.map((item) => this.normalizeAccount(item));
         }
         return (response as Account[]) || [];
-      })
+      }),
+      catchError((err) => throwError(() => err))
     );
   }
 
-  /** Get a single account by id. If no detail endpoint exists, fall back to the accounts list. */
   getAccount(id: number | string): Observable<Account | null> {
     return this.http.get<any>(`${this.base}/accounts/${id}`).pipe(
-      map((response) => this.normalizeAccount(response)),
-      catchError(() =>
-        this.getAccounts().pipe(
-          map((accounts) => accounts.find((account) => String(account.id) === String(id)) || null)
-        )
-      )
+      map((response) => {
+        const account = this.normalizeAccount(response);
+        this.currentAccount = account;
+        return account;
+      }),
+      catchError((err) => throwError(() => err))
     );
   }
 
-  /** Retrieve all movements/transactions for the account or globally. */
+  /** CORRETTO: Risolve l'errore in movements.component.ts (ora l'ID è opzionale) */
   getMovements(accountId?: number | string): Observable<Movement[]> {
-    const path = accountId ? `${this.base}/accounts/${accountId}/transactions` : `${this.base}/movements`;
-    return this.http.get<Movement[]>(path);
+    const id = this.getActiveAccountId(accountId);
+    const path = `${this.base}/accounts/${id}/transactions`;
+    return this.http.get<any>(path).pipe(
+      map((response) => {
+        if (Array.isArray(response) && response.length > 0 && Array.isArray(response[0])) {
+          return response.map((item) => this.normalizeMovement(item));
+        }
+        return (response as Movement[]) || [];
+      }),
+      catchError((err) => throwError(() => err))
+    );
   }
 
-  /** Retrieve a single movement by id, optionally within an account. */
-  getMovement(id: number | string, transactionId?: number | string): Observable<Movement> {
-    const path = transactionId
-      ? `${this.base}/accounts/${id}/transactions/${transactionId}`
-      : `${this.base}/movements/${id}`;
+  private normalizeMovement(data: any): Movement {
+    if (Array.isArray(data)) {
+      return {
+        id: Number(data[0]),
+        account_id: Number(data[1]),
+        type: (data[2] || 'deposit') as MovementType,
+        amount: Number(data[3]) || 0,
+        description: String(data[4] || ''),
+        created_at: data[5] ? String(data[5]) : undefined
+      };
+    }
+    return data as Movement;
+  }
+
+  /** CORRETTO: Risolve l'errore in movement-detail.component.ts */
+  getMovement(idOrAccountId: number | string, transactionId?: number | string): Observable<Movement> {
+    let accountId: number | string;
+    let tId: number | string;
+
+    if (transactionId === undefined) {
+      // Se viene passato solo un argomento, assume che sia l'ID della transazione e usa l'account corrente
+      accountId = this.getActiveAccountId();
+      tId = idOrAccountId;
+    } else {
+      accountId = idOrAccountId;
+      tId = transactionId;
+    }
+
+    const path = `${this.base}/accounts/${accountId}/transactions/${tId}`;
     return this.http.get<Movement>(path);
   }
 
-  /** Register a deposit transaction on the backend. */
   deposit(accountId: number | string, movement: { amount: number; description: string }) {
     return this.http.post(`${this.base}/accounts/${accountId}/deposit`, movement);
   }
 
-  /** Register a withdrawal transaction on the backend. */
   withdraw(accountId: number | string, movement: { amount: number; description: string }) {
     return this.http.post(`${this.base}/accounts/${accountId}/withdrawal`, movement);
   }
 
-  /** Create a generic movement record. */
-  postMovement(movement: { type: string; amount: number; description: string; date: string }) {
-    return this.http.post(`${this.base}/movements`, movement);
+  postMovement(accountId: number | string, type: 'deposit' | 'withdrawal', movement: { amount: number; description: string }) {
+    if (type === 'withdrawal') {
+      return this.withdraw(accountId, movement);
+    }
+    return this.deposit(accountId, movement);
   }
 
-  /** Get current balance for account or global balance. */
+  /** CORRETTO: Risolve l'errore in dashboard.component.ts (ora l'ID è opzionale) */
   getBalance(accountId?: number | string) {
-    const path = accountId ? `${this.base}/accounts/${accountId}/balance` : `${this.base}/balance`;
+    const id = this.getActiveAccountId(accountId);
+    const path = `${this.base}/accounts/${id}/balance`;
     return this.http.get<{ balance: number }>(path);
   }
 
-  /** Convert account balance or global balance to FIAT. */
+  /** CORRETTO: Risolve l'errore di convertFiat in conversion.component.ts */
   convertFiat(accountIdOrCurrency: number | string, currency?: string) {
     if (currency === undefined) {
-      return this.http.get<any>(`${this.base}/convert/fiat/${accountIdOrCurrency}`);
+      // Se viene passato solo un parametro, usa l'account attivo e tratta il primo parametro come la valuta target
+      const id = this.getActiveAccountId();
+      return this.http.get<any>(`${this.base}/accounts/${id}/balance/convert/fiat?to=${accountIdOrCurrency}`);
     }
     return this.http.get<any>(`${this.base}/accounts/${accountIdOrCurrency}/balance/convert/fiat?to=${currency}`);
   }
 
-  /** Convert account balance or global balance to crypto. */
+  /** CORRETTO: Risolve l'errore di convertCrypto in conversion.component.ts */
   convertCrypto(accountIdOrSymbol: number | string, symbol?: string) {
     if (symbol === undefined) {
-      return this.http.get<any>(`${this.base}/convert/crypto/${accountIdOrSymbol}`);
+      // Se viene passato solo un parametro, usa l'account attivo e tratta il primo parametro come il simbolo crypto
+      const id = this.getActiveAccountId();
+      return this.http.get<any>(`${this.base}/accounts/${id}/balance/convert/crypto?to=${accountIdOrSymbol}`);
     }
     return this.http.get<any>(`${this.base}/accounts/${accountIdOrSymbol}/balance/convert/crypto?to=${symbol}`);
   }

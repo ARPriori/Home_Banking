@@ -8,18 +8,28 @@
   </header>
 
   <div class="app-panel">
-    <div class="debug-banner">AccountsOverview loaded · {{ accounts.length }} items · route: {{ currentRoute }}</div>
-    <div class="info-grid">
-      <div *ngFor="let a of accounts" class="info-item" (click)="openAccount(a)" style="cursor:pointer">
+    <div class="debug-banner">
+      Loading: {{ loading() }} | Accounts: {{ accounts().length }} items | Route: {{ currentRoute }}
+    </div>
+
+    <!-- Show loading state -->
+    <div *ngIf="loading()" class="loading">
+      <p>Loading accounts...</p>
+    </div>
+
+    <!-- Show accounts grid -->
+    <div *ngIf="!loading() && accounts().length > 0" class="info-grid">
+      <div *ngFor="let a of accounts()" class="info-item" (click)="openAccount(a)" style="cursor:pointer">
         <span>Account</span>
-        <strong>{{ a.name || a[1] || '' }} {{ a.surname || a[2] || '' }}</strong>
-        <p class="muted-copy">ID: {{ a.id || a[0] }} · {{ a.currency || a[3] }}</p>
+        <strong>{{ a.name }} {{ a.surname }}</strong>
+        <p class="muted-copy">ID: {{ a.id }} · {{ a.currency }}</p>
       </div>
     </div>
 
-    <div *ngIf="!loading && accounts.length === 0" class="empty-state">
-      <div *ngIf="!error">No accounts found.</div>
-      <div *ngIf="error">{{ error }}</div>
+    <!-- Show error or empty state -->
+    <div *ngIf="!loading() && accounts().length === 0" class="empty-state">
+      <div *ngIf="error()">{{ error() }}</div>
+      <div *ngIf="!error()">No accounts found.</div>
     </div>
   </div>
 </div>

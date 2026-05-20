@@ -11,7 +11,13 @@ export class ApiInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((err: HttpErrorResponse) => {
         // In production you might forward to a monitoring service here.
-        console.error('API Error', err);
+        console.error('API Error', {
+          status: err.status,
+          statusText: err.statusText,
+          url: err.url,
+          message: err.message,
+          error: err.error
+        });
         return throwError(() => err);
       })
     );

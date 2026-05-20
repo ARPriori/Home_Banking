@@ -15,6 +15,7 @@ $app->setBasePath('');
 
 //Transactions API's
 $app ->get('/accounts', 'AccountController:allAccounts');
+$app ->get('/accounts/{account}', 'AccountController:getAccount');
 $app ->get('/accounts/{account}/transactions', 'TransactionController:allTransactions');
 $app ->get('/accounts/{account}/transactions/{transactionId}', 'TransactionController:transaction');
 $app ->post('/accounts/{account}/deposit', 'TransactionController:deposit');

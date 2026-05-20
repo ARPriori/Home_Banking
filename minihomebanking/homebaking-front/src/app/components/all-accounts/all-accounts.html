@@ -15,17 +15,16 @@
         <tr>
           <th>Account ID</th>
           <th>Account Name</th>
-          <th>Balance</th>
-          <th>Type</th>
+          <th>Surname</th>
+          <th>Currency</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let account of accounts()">
-          <td>{{ account[0] }}</td>
-          <td>{{ account[1] }}</td>
-          <td>{{ account[2] }}</td>
-          <td>{{ balances()[account[0]] }}</td>
-          <td>{{ account[3] }}</td>
+          <td>{{ account.id }}</td>
+          <td>{{ account.name }}</td>
+          <td>{{ account.surname }}</td>
+          <td>{{ account.currency }}</td>
         </tr>
       </tbody>
     </table>

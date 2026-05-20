@@ -1,6 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AccountService } from '../../services/AccountServices.service';
+import { AccountService } from '../../services/account.service';
+import { Account } from '../../models/account.model';
 
 @Component({
   selector: 'app-all-accounts',
@@ -9,7 +10,7 @@ import { AccountService } from '../../services/AccountServices.service';
   styleUrl: './all-accounts.css',
 })
 export class AllAccounts implements OnInit {
-  accounts = signal<any[]>([]);
+  accounts = signal<Account[]>([]);
 
   balances = signal<any[]>([]);
   loading = signal(true);
@@ -20,13 +21,12 @@ export class AllAccounts implements OnInit {
   ngOnInit(): void {
     this.accountService.getAccounts().subscribe({
       next: (data) => {
-        console.log('Dati ricevuti:', data);
-        console.log('Primo account:', data[0]);
+        console.log('Accounts loaded:', data);
         this.accounts.set(data);
         this.loading.set(false);
       },
       error: (err) => {
-        console.error('Errore API:', err);
+        console.error('Error loading accounts:', err);
         this.error.set('Failed to load accounts');
         this.loading.set(false);
       },

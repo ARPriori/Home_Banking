@@ -25,17 +25,33 @@ export class TransactionFormComponent {
 
   submit() {
     if (this.form.invalid) return;
-    const v = this.form.value;
-    const payload: { type: string; amount: number; description: string; date: string } = {
-      type: (v.type as string) || 'deposit',
-      amount: Number(v.amount) || 0,
-      description: (v.description as string) || '',
-      date: new Date().toISOString()
-    };
     this.submitting = true;
-    this.account.postMovement(payload).subscribe({
-      next: () => this.router.navigate(['/movements']),
-      error: () => (this.submitting = false),
+
+    const v = this.form.value;
+    
+    // 1. Recupera l'ID del conto attivo dal servizio (o un fallback se non presente)
+    // Se il tuo AccountService ha una variabile tipo 'currentAccount', usala qui.
+    const accountId = this.account.currentAccount?.id || 1; 
+
+    // 2. Determina l'endpoint corretto richiesto da Slim PHP ('deposit' o 'withdrawal')
+    const actionType = v.type === 'withdrawal' ? 'withdrawal' : 'deposit';
+
+    // 3. Modella il payload per combaciare esattamente con i requisiti del backend
+    const payload = {
+      amount: Number(v.amount) || 0,
+      description: (v.description as string) || ''
+    };
+
+    // 4. Invia la richiesta all'endpoint specifico del conto
+    this.account.postMovement(accountId, actionType, payload).subscribe({
+      next: () => {
+        // Reindirizza al workspace del conto o alla lista dei movimenti
+        this.router.navigate(['/account', accountId]);
+      },
+      error: (err) => {
+        console.error('Errore durante l\'invio del movimento:', err);
+        this.submitting = false;
+      },
       complete: () => (this.submitting = false)
     });
   }
