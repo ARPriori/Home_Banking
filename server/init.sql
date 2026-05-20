@@ -21,10 +21,12 @@ CREATE TABLE IF NOT EXISTS `account` (
 --
 
 INSERT INTO `account` (`id`, `name`, `surname`, `currency`, `created_at`) VALUES
-(1, 'Paride', 'Ficiente', 'USD', '2026-04-27 06:38:25'),
-(2, 'Mimas', 'Turbo', 'EUR', '2026-04-27 06:38:25'),
-(3, 'Musso', 'Leeni', 'USD', '2026-04-27 06:38:25'),
-(4, 'Lamin', 'Kiadura', 'YEN', '2026-04-27 06:38:25');
+(1, 'Giovanni', 'Piacenza', 'USD', '2026-04-27 06:38:25'),
+(2, 'Pino', 'Turbolento', 'EUR', '2026-04-27 06:38:25'),
+(3, 'Celine', 'Massari', 'USD', '2026-04-27 06:38:25'),
+(4, 'Anna', 'Boob', 'YEN', '2026-04-27 06:38:25'),
+(5, 'Marce', 'Line', 'EUR', '2026-04-27 06:38:25'),
+(6, 'Gomma', 'Rosa', 'YEN', '2026-04-27 06:38:25');
 
 -- --------------------------------------------------------
 
