@@ -1,17 +1,21 @@
 :root {
 	--app-bg: #f6f8fb;
 	--surface: #ffffff;
-	--surface-muted: #f4f7fb;
+	--surface-muted: #fdf2f4; /* Sfondo rosa pastello leggerissimo */
 	--border: #e4eaf2;
 	--text-main: #172033;
 	--text-muted: #64748b;
-	--primary: #0d6efd;
-	--primary-dark: #0b5ed7;
+	
+	/* Palette Rosa Morbido (Soft Pastel Rose) */
+	--primary: #e8a7b5;       /* Rosa morbido principale */
+	--primary-dark: #df93a3;  /* Rosa carico per hover e stati attivi */
+	--primary-muted: #f7d6dc; /* Rosa soft per bordi o elementi secondari */
+	
 	--danger: #be123c;
 	--danger-soft: #fff1f2;
 	--success: #15803d;
 	--success-soft: #ecfdf3;
-	--shadow-panel: 0 16px 34px rgba(15, 23, 42, 0.08);
+	--shadow-panel: 0 16px 34px rgba(15, 23, 42, 0.04);
 }
 
 html,
@@ -51,13 +55,14 @@ a {
 	align-items: center;
 	gap: 0.35rem;
 	margin-bottom: 1rem;
-	color: #0f5ea8;
+	color: var(--primary-dark);
 	font-weight: 700;
 	text-decoration: none;
+	transition: color 0.15s ease;
 }
 
 .back-btn:hover {
-	color: #084b88;
+	color: #c46d80;
 	text-decoration: underline;
 }
 
@@ -140,7 +145,15 @@ a {
 	border-radius: 8px;
 }
 
+/* Modifiche focus per elementi form in rosa */
+.form-control:focus,
+.form-select:focus {
+	border-color: var(--primary);
+	box-shadow: 0 0 0 0.25rem rgba(232, 167, 181, 0.25);
+}
+
 .input-prefix {
+	display: grid;
 	grid-template-columns: auto 1fr;
 	align-items: center;
 	border: 1px solid #ced6e0;
@@ -152,15 +165,15 @@ a {
 }
 
 .input-prefix:focus-within {
-	border-color: #86b7fe;
-	box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.18);
+	border-color: var(--primary);
+	box-shadow: 0 0 0 0.25rem rgba(232, 167, 181, 0.25);
 }
 
 .input-prefix span {
 	height: 100%;
 	display: inline-flex;
 	align-items: center;
-	background: var(--surface-muted);
+	background: #f8fafc;
 	color: #475569;
 	padding: 0 0.85rem;
 	font-weight: 700;
@@ -187,8 +200,8 @@ a {
 	justify-content: center;
 	min-height: 2rem;
 	border-radius: 999px;
-	background: #eef6ff;
-	color: #0f5ea8;
+	background: var(--surface-muted);
+	color: #c46d80;
 	padding: 0.35rem 0.75rem;
 	font-size: 0.85rem;
 	font-weight: 700;
@@ -216,6 +229,24 @@ a {
 	min-width: 9.5rem;
 	min-height: 2.75rem;
 	font-weight: 700;
+}
+
+/* Bottone Rosa Personalizzato */
+.btn-pink-primary {
+	background-color: var(--primary) !important;
+	color: #fff !important;
+	border: none !important;
+	transition: all 0.2s ease;
+}
+
+.btn-pink-primary:hover:not(:disabled) {
+	background-color: var(--primary-dark) !important;
+	box-shadow: 0 .25rem .5rem rgba(232, 167, 181, 0.3) !important;
+}
+
+.btn-pink-primary:disabled {
+	background-color: #e2e8f0 !important;
+	color: #a0aec0 !important;
 }
 
 .data-table {
@@ -252,7 +283,7 @@ a {
 .info-item {
 	border: 1px solid var(--border);
 	border-radius: 8px;
-	background: var(--surface-muted);
+	background: #f8fafc;
 	padding: 1rem;
 }
 
@@ -287,6 +318,45 @@ a {
 
 .alert {
 	margin: 0;
+}
+
+/* Classi di utilità per Angular */
+.bg-pink-subtle {
+	background-color: var(--surface-muted) !important;
+}
+
+.text-pink-primary {
+	color: var(--primary-dark) !important;
+}
+
+.text-pink-result {
+	color: #c46d80 !important;
+	font-weight: bold;
+}
+
+/* Card Interattive Custom (Account e Conversione) */
+.account-card, 
+.conversion-card {
+	cursor: pointer;
+	transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.account-card:hover {
+	background-color: #fafbfc !important;
+	border-color: var(--primary) !important;
+	transform: translateY(-2px);
+	box-shadow: 0 .5rem 1rem rgba(232, 167, 181, 0.15) !important;
+}
+
+.conversion-card:hover {
+	background-color: var(--surface-muted) !important;
+	border-color: var(--primary-muted) !important;
+	transform: scale(1.015);
+}
+
+.conversion-card:active, 
+.account-card:active {
+	transform: scale(1);
 }
 
 @media (max-width: 575px) {

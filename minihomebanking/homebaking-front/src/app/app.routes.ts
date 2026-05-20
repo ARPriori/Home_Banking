@@ -13,7 +13,6 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MovementsComponent } from './components/movements/movements.component';
 import { MovementDetailComponent } from './components/movement-detail/movement-detail.component';
 import { TransactionFormComponent } from './components/transaction-form/transaction-form.component';
-import { ConversionComponent } from './components/conversion/conversion.component';
 import { AccountsOverviewComponent } from './components/accounts-overview/accounts-overview.component';
 import { AccountWorkspaceComponent } from './components/account-workspace/account-workspace.component';
 
