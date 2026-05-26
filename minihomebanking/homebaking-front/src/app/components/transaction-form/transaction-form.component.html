@@ -20,14 +20,16 @@
         <label class="form-label fw-semibold text-secondary small">Amount</label>
         <div class="input-group">
           <span class="input-group-text bg-light text-muted border-end-0 py-2.5 rounded-start-3">$</span>
-          <input type="number" class="form-control border-start-0 rounded-end-3 py-2.5 fw-semibold focus-pink" formControlName="amount" step="0.01" placeholder="0.00" />
+          <input type="number" class="form-control border-start-0 rounded-end-3 py-2.5 fw-semibold focus-pink"
+            formControlName="amount" step="0.01" placeholder="0.00" />
         </div>
       </div>
 
       <!-- Input Descrizione -->
       <div class="mb-4">
         <label class="form-label fw-semibold text-secondary small">Description Reference</label>
-        <input type="text" class="form-control rounded-3 py-2.5 focus-pink" formControlName="description" placeholder="e.g. Online Store Purchase, Dividends" />
+        <input type="text" class="form-control rounded-3 py-2.5 focus-pink" formControlName="description"
+          placeholder="e.g. Online Store Purchase, Dividends" />
       </div>
 
       <!-- Error Logs Block -->
@@ -35,17 +37,22 @@
         <ul class="m-0 ps-3">
           <li *ngIf="form.get('amount')?.errors?.['required']">Numeric amount field cannot be empty.</li>
           <li *ngIf="form.get('amount')?.errors?.['min']">Amount value parameter must exceed 0.01 units.</li>
-          <li *ngIf="form.get('description')?.errors?.['required']">A description value is required for database logs.</li>
+          <li *ngIf="form.get('description')?.errors?.['required']">A description value is required for database logs.
+          </li>
+          <!-- Nuovo errore dal Backend -->
+          <li *ngIf="form.get('amount')?.errors?.['insufficientFunds']">You do not have enough balance for this
+            withdrawal.</li>
         </ul>
       </div>
 
       <!-- Buttons Flow -->
       <div class="d-flex flex-column gap-2">
-        <button type="submit" class="btn btn-pink-primary w-100 py-2.5 rounded-3 fw-medium shadow-sm" [disabled]="submitting || form.invalid">
+        <button type="submit" class="btn btn-pink-primary w-100 py-2.5 rounded-3 fw-medium shadow-sm"
+          [disabled]="submitting || form.invalid">
           <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
           Execute Transaction
         </button>
-        <a class="btn btn-light w-100 py-2.5 rounded-3 fw-medium border text-secondary" routerLink="/">
+        <a class="btn btn-light w-100 py-2.5 rounded-3 fw-medium border text-secondary" routerLink="['/account', accountId]">
           Cancel Operation
         </a>
       </div>

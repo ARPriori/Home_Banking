@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Account } from '../../models/account.model';
@@ -17,6 +17,21 @@ export class AccountWorkspaceComponent implements OnInit {
   movements = signal<Movement[]>([]);
   loading = signal(false);
 
+  // NUOVO: Segnale per il tipo di filtro ('all' | 'deposit' | 'withdrawal')
+  filterType = signal<string>('all');
+
+  // NUOVO: computed signal reattivo per filtrare i movimenti automaticamente
+  filteredMovements = computed(() => {
+    const currentFilter = this.filterType();
+    const allMovements = this.movements() || [];
+    
+    if (currentFilter === 'all') {
+      return allMovements;
+    }
+    
+    return allMovements.filter(m => m.type === currentFilter);
+  });
+
   // NUOVO: Tracciamento dei risultati e caricamenti delle conversioni rapide
   conversionResults = signal<{ [key: string]: number | null }>({});
   conversionLoading = signal<{ [key: string]: boolean }>({});
@@ -29,6 +44,12 @@ export class AccountWorkspaceComponent implements OnInit {
       this.loadAccount(id);
       this.loadMovements(id);
     }
+  }
+
+  // NUOVO: Metodo per catturare il cambio di selezione nella tendina HTML
+  onFilterChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    this.filterType.set(selectElement.value);
   }
 
   loadAccount(id: string) {

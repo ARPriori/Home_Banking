@@ -7,12 +7,16 @@
   </div>
 
   <!-- Header Profilo Conto -->
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center bg-white p-4 rounded-4 shadow-sm border border-light mb-4">
+  <div
+    class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center bg-white p-4 rounded-4 shadow-sm border border-light mb-4">
     <div>
-      <span class="badge bg-pink-subtle text-pink-primary px-3 py-2 rounded-pill fw-semibold mb-2 d-inline-block">Account Profile</span>
+      <span
+        class="badge bg-pink-subtle text-pink-primary px-3 py-2 rounded-pill fw-semibold mb-2 d-inline-block">Account
+        Profile</span>
       <h1 class="h2 fw-bold text-dark m-0">{{ account()?.name }} {{ account()?.surname }}</h1>
       <p class="text-muted small m-0 mt-1">
-        <span class="fw-medium">Account ID:</span> {{ account()?.id }} &nbsp;·&nbsp; <span class="fw-medium">Base Currency:</span> {{ account()?.currency }}
+        <span class="fw-medium">Account ID:</span> {{ account()?.id }} &nbsp;·&nbsp; <span class="fw-medium">Base
+          Currency:</span> {{ account()?.currency }}
       </p>
     </div>
     <div class="mt-3 mt-md-0">
@@ -34,8 +38,22 @@
       <p class="text-muted mt-2 mb-0">Retrieving transactions...</p>
     </div>
 
+    <!-- Sezione Filtri -->
+    <div class="d-flex justify-content-end mb-3" *ngIf="!loading() && movements() && movements().length > 0">
+      <div class="d-flex align-items-center gap-2">
+        <label class="text-muted small fw-medium m-0">Filter by:</label>
+        <select class="form-select form-select-sm rounded-3 bg-white border shadow-sm w-auto"
+          (change)="onFilterChange($event)">
+          <option value="all">All Transactions</option>
+          <option value="deposit">Deposits Only</option>
+          <option value="withdrawal">Withdrawals Only</option>
+        </select>
+      </div>
+    </div>
+
     <!-- Data Table -->
-    <div class="table-responsive" *ngIf="!loading() && movements() && movements().length > 0">
+    <!-- Nota: Sostituito movements() con filteredMovements() nel ciclo e nei controlli -->
+    <div class="table-responsive" *ngIf="!loading() && filteredMovements() && filteredMovements().length > 0">
       <table class="table table-hover align-middle m-0">
         <thead class="table-light text-muted small uppercase">
           <tr>
@@ -46,17 +64,18 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let m of movements()">
+          <tr *ngFor="let m of filteredMovements()">
             <td class="text-secondary py-3 small">{{ m.created_at }}</td>
             <td class="py-3">
-              <span class="badge px-3 py-1.5 rounded-pill fw-medium text-capitalize" 
-                    [ngClass]="m.type === 'deposit' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'">
+              <span class="badge px-3 py-1.5 rounded-pill fw-medium text-capitalize"
+                [ngClass]="m.type === 'deposit' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'">
                 {{ m.type }}
               </span>
             </td>
             <td class="text-dark fw-medium py-3">{{ m.description }}</td>
             <td class="py-3 text-end fw-bold" [ngClass]="m.type === 'deposit' ? 'text-success' : 'text-danger'">
-              {{ (m.type === 'withdrawal' ? -m.amount : m.amount) | currency:account()?.currency || 'EUR':'symbol':'1.2-2' }}
+              {{ (m.type === 'withdrawal' ? -m.amount : m.amount) | currency:account()?.currency ||
+              'EUR':'symbol':'1.2-2' }}
             </td>
           </tr>
         </tbody>
@@ -64,105 +83,130 @@
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!loading() && (!movements() || movements().length === 0)" class="text-center py-5 border border-dashed rounded-3 bg-light">
-      <p class="text-muted m-0">No historical movements registered yet for this account.</p>
+    <!-- Mostrato se non ci sono movimenti totali o se il filtro ha svuotato la lista -->
+    <div *ngIf="!loading() && (!filteredMovements() || filteredMovements().length === 0)"
+      class="text-center py-5 border border-dashed rounded-3 bg-light">
+      <p class="text-muted m-0">No movements match your criteria.</p>
     </div>
-  </div>
 
-  <!-- Box Conversioni Veloci -->
-  <div class="bg-white rounded-4 shadow-sm border border-light p-4">
-    <div class="border-bottom pb-3 mb-4">
-      <h2 class="h5 fw-bold text-dark m-0">Quick Balance Conversions</h2>
-    </div>
-    
-    <div class="row g-4">
-      <!-- Sezione FIAT -->
-      <div class="col-12 col-md-6">
-        <h3 class="h6 fw-bold text-secondary text-uppercase mb-3">Convert to FIAT</h3>
-        <div class="d-flex flex-column gap-2">
-          
-          <div class="conversion-card p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center" (click)="runQuickConversion('fiat', 'USD')">
-            <div>
-              <span class="fw-bold text-dark">USD</span>
-              <p class="text-muted small m-0">United States Dollar</p>
-            </div>
-            <div class="text-end">
-              <span *ngIf="conversionLoading()['USD']" class="spinner-border spinner-border-sm text-pink-primary"></span>
-              <span *ngIf="!conversionLoading()['USD'] && !conversionResults()['USD']" class="badge bg-secondary-subtle text-secondary px-2.5 py-1.5 rounded">Convert</span>
-              <strong *ngIf="conversionResults()['USD']" class="text-pink-result">{{ conversionResults()['USD'] | number:'1.2-2' }} USD</strong>
-            </div>
-          </div>
-
-          <div class="conversion-card p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center" (click)="runQuickConversion('fiat', 'GBP')">
-            <div>
-              <span class="fw-bold text-dark">GBP</span>
-              <p class="text-muted small m-0">Great Britain Pound</p>
-            </div>
-            <div class="text-end">
-              <span *ngIf="conversionLoading()['GBP']" class="spinner-border spinner-border-sm text-pink-primary"></span>
-              <span *ngIf="!conversionLoading()['GBP'] && !conversionResults()['GBP']" class="badge bg-secondary-subtle text-secondary px-2.5 py-1.5 rounded">Convert</span>
-              <strong *ngIf="conversionResults()['GBP']" class="text-pink-result">{{ conversionResults()['GBP'] | number:'1.2-2' }} GBP</strong>
-            </div>
-          </div>
-
-          <div class="conversion-card p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center" (click)="runQuickConversion('fiat', 'JPY')">
-            <div>
-              <span class="fw-bold text-dark">JPY</span>
-              <p class="text-muted small m-0">Japanese Yen</p>
-            </div>
-            <div class="text-end">
-              <span *ngIf="conversionLoading()['JPY']" class="spinner-border spinner-border-sm text-pink-primary"></span>
-              <span *ngIf="!conversionLoading()['JPY'] && !conversionResults()['JPY']" class="badge bg-secondary-subtle text-secondary px-2.5 py-1.5 rounded">Convert</span>
-              <strong *ngIf="conversionResults()['JPY']" class="text-pink-result">{{ conversionResults()['JPY'] | number:'1.2-2' }} JPY</strong>
-            </div>
-          </div>
-
-        </div>
+    <!-- Box Conversioni Veloci -->
+    <div class="bg-white rounded-4 shadow-sm border border-light p-4">
+      <div class="border-bottom pb-3 mb-4">
+        <h2 class="h5 fw-bold text-dark m-0">Quick Balance Conversions</h2>
       </div>
 
-      <!-- Sezione Crypto -->
-      <div class="col-12 col-md-6">
-        <h3 class="h6 fw-bold text-secondary text-uppercase mb-3">Convert to Crypto</h3>
-        <div class="d-flex flex-column gap-2">
-          
-          <div class="conversion-card p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center" (click)="runQuickConversion('crypto', 'BTC')">
-            <div>
-              <span class="fw-bold text-dark">BTC</span>
-              <p class="text-muted small m-0">Bitcoin Network</p>
-            </div>
-            <div class="text-end">
-              <span *ngIf="conversionLoading()['BTC']" class="spinner-border spinner-border-sm text-pink-primary"></span>
-              <span *ngIf="!conversionLoading()['BTC'] && !conversionResults()['BTC']" class="badge bg-secondary-subtle text-secondary px-2.5 py-1.5 rounded">Convert</span>
-              <strong *ngIf="conversionResults()['BTC']" class="text-success">{{ conversionResults()['BTC'] | number:'1.4-6' }} BTC</strong>
-            </div>
-          </div>
+      <div class="row g-4">
+        <!-- Sezione FIAT -->
+        <div class="col-12 col-md-6">
+          <h3 class="h6 fw-bold text-secondary text-uppercase mb-3">Convert to FIAT</h3>
+          <div class="d-flex flex-column gap-2">
 
-          <div class="conversion-card p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center" (click)="runQuickConversion('crypto', 'ETH')">
-            <div>
-              <span class="fw-bold text-dark">ETH</span>
-              <p class="text-muted small m-0">Ethereum Network</p>
+            <div class="conversion-card p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center"
+              (click)="runQuickConversion('fiat', 'USD')">
+              <div>
+                <span class="fw-bold text-dark">USD</span>
+                <p class="text-muted small m-0">United States Dollar</p>
+              </div>
+              <div class="text-end">
+                <span *ngIf="conversionLoading()['USD']"
+                  class="spinner-border spinner-border-sm text-pink-primary"></span>
+                <span *ngIf="!conversionLoading()['USD'] && !conversionResults()['USD']"
+                  class="badge bg-secondary-subtle text-secondary px-2.5 py-1.5 rounded">Convert</span>
+                <strong *ngIf="conversionResults()['USD']" class="text-pink-result">{{ conversionResults()['USD'] |
+                  number:'1.2-2' }} USD</strong>
+              </div>
             </div>
-            <div class="text-end">
-              <span *ngIf="conversionLoading()['ETH']" class="spinner-border spinner-border-sm text-pink-primary"></span>
-              <span *ngIf="!conversionLoading()['ETH'] && !conversionResults()['ETH']" class="badge bg-secondary-subtle text-secondary px-2.5 py-1.5 rounded">Convert</span>
-              <strong *ngIf="conversionResults()['ETH']" class="text-success">{{ conversionResults()['ETH'] | number:'1.4-6' }} ETH</strong>
-            </div>
-          </div>
 
-          <div class="conversion-card p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center" (click)="runQuickConversion('crypto', 'BNB')">
-            <div>
-              <span class="fw-bold text-dark">BNB</span>
-              <p class="text-muted small m-0">Binance Smart Chain</p>
+            <div class="conversion-card p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center"
+              (click)="runQuickConversion('fiat', 'GBP')">
+              <div>
+                <span class="fw-bold text-dark">GBP</span>
+                <p class="text-muted small m-0">Great Britain Pound</p>
+              </div>
+              <div class="text-end">
+                <span *ngIf="conversionLoading()['GBP']"
+                  class="spinner-border spinner-border-sm text-pink-primary"></span>
+                <span *ngIf="!conversionLoading()['GBP'] && !conversionResults()['GBP']"
+                  class="badge bg-secondary-subtle text-secondary px-2.5 py-1.5 rounded">Convert</span>
+                <strong *ngIf="conversionResults()['GBP']" class="text-pink-result">{{ conversionResults()['GBP'] |
+                  number:'1.2-2' }} GBP</strong>
+              </div>
             </div>
-            <div class="text-end">
-              <span *ngIf="conversionLoading()['BNB']" class="spinner-border spinner-border-sm text-pink-primary"></span>
-              <span *ngIf="!conversionLoading()['BNB'] && !conversionResults()['BNB']" class="badge bg-secondary-subtle text-secondary px-2.5 py-1.5 rounded">Convert</span>
-              <strong *ngIf="conversionResults()['BNB']" class="text-success">{{ conversionResults()['BNB'] | number:'1.4-6' }} BNB</strong>
-            </div>
-          </div>
 
+            <div class="conversion-card p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center"
+              (click)="runQuickConversion('fiat', 'JPY')">
+              <div>
+                <span class="fw-bold text-dark">JPY</span>
+                <p class="text-muted small m-0">Japanese Yen</p>
+              </div>
+              <div class="text-end">
+                <span *ngIf="conversionLoading()['JPY']"
+                  class="spinner-border spinner-border-sm text-pink-primary"></span>
+                <span *ngIf="!conversionLoading()['JPY'] && !conversionResults()['JPY']"
+                  class="badge bg-secondary-subtle text-secondary px-2.5 py-1.5 rounded">Convert</span>
+                <strong *ngIf="conversionResults()['JPY']" class="text-pink-result">{{ conversionResults()['JPY'] |
+                  number:'1.2-2' }} JPY</strong>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Sezione Crypto -->
+        <div class="col-12 col-md-6">
+          <h3 class="h6 fw-bold text-secondary text-uppercase mb-3">Convert to Crypto</h3>
+          <div class="d-flex flex-column gap-2">
+
+            <div class="conversion-card p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center"
+              (click)="runQuickConversion('crypto', 'BTC')">
+              <div>
+                <span class="fw-bold text-dark">BTC</span>
+                <p class="text-muted small m-0">Bitcoin Network</p>
+              </div>
+              <div class="text-end">
+                <span *ngIf="conversionLoading()['BTC']"
+                  class="spinner-border spinner-border-sm text-pink-primary"></span>
+                <span *ngIf="!conversionLoading()['BTC'] && !conversionResults()['BTC']"
+                  class="badge bg-secondary-subtle text-secondary px-2.5 py-1.5 rounded">Convert</span>
+                <strong *ngIf="conversionResults()['BTC']" class="text-success">{{ conversionResults()['BTC'] |
+                  number:'1.4-6' }} BTC</strong>
+              </div>
+            </div>
+
+            <div class="conversion-card p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center"
+              (click)="runQuickConversion('crypto', 'ETH')">
+              <div>
+                <span class="fw-bold text-dark">ETH</span>
+                <p class="text-muted small m-0">Ethereum Network</p>
+              </div>
+              <div class="text-end">
+                <span *ngIf="conversionLoading()['ETH']"
+                  class="spinner-border spinner-border-sm text-pink-primary"></span>
+                <span *ngIf="!conversionLoading()['ETH'] && !conversionResults()['ETH']"
+                  class="badge bg-secondary-subtle text-secondary px-2.5 py-1.5 rounded">Convert</span>
+                <strong *ngIf="conversionResults()['ETH']" class="text-success">{{ conversionResults()['ETH'] |
+                  number:'1.4-6' }} ETH</strong>
+              </div>
+            </div>
+
+            <div class="conversion-card p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center"
+              (click)="runQuickConversion('crypto', 'BNB')">
+              <div>
+                <span class="fw-bold text-dark">BNB</span>
+                <p class="text-muted small m-0">Binance Smart Chain</p>
+              </div>
+              <div class="text-end">
+                <span *ngIf="conversionLoading()['BNB']"
+                  class="spinner-border spinner-border-sm text-pink-primary"></span>
+                <span *ngIf="!conversionLoading()['BNB'] && !conversionResults()['BNB']"
+                  class="badge bg-secondary-subtle text-secondary px-2.5 py-1.5 rounded">Convert</span>
+                <strong *ngIf="conversionResults()['BNB']" class="text-success">{{ conversionResults()['BNB'] |
+                  number:'1.4-6' }} BNB</strong>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
